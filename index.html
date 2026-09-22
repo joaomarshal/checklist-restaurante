@@ -1,0 +1,1995 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checklist Restaurante</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f3f4f6;
+      color: #111827;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #111827, #1f2937);
+      color: white;
+      padding: 28px 20px;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .header-title h1 {
+      font-size: 28px;
+    }
+
+    .header-subtitle {
+      color: #d1d5db;
+      font-size: 14px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 25px auto;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 7px;
+      color: #374151;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 9px;
+      font-size: 14px;
+      background: white;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px rgba(37,99,235,.12);
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat {
+      background: white;
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+    }
+
+    .stat-label {
+      color: #6b7280;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .progress-container {
+      background: #e5e7eb;
+      height: 12px;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #16a34a;
+      transition: width .3s ease;
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .filter-btn {
+      border: none;
+      background: #e5e7eb;
+      color: #374151;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .filter-btn:hover {
+      background: #d1d5db;
+    }
+
+    .filter-btn.active {
+      background: #2563eb;
+      color: white;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .section-title h2 {
+      font-size: 20px;
+    }
+
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .task {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 15px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      transition: .2s;
+    }
+
+    .task:hover {
+      border-color: #93c5fd;
+      background: #f8fafc;
+    }
+
+    .task.completed {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+    }
+
+    .task input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      cursor: pointer;
+      accent-color: #16a34a;
+    }
+
+    .task-content {
+      flex: 1;
+    }
+
+    .task-title {
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .task.completed .task-title {
+      text-decoration: line-through;
+      color: #6b7280;
+    }
+
+    .task-info {
+      margin-top: 5px;
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .task-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .small-btn {
+      border: none;
+      padding: 7px 9px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .note-btn {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+
+    .problem-btn {
+      background: #fef2f2;
+      color: #dc2626;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 40px;
+      color: #6b7280;
+    }
+
+    .bottom-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .btn {
+      border: none;
+      padding: 12px 18px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .btn-success {
+      background: #16a34a;
+      color: white;
+    }
+
+    .btn-warning {
+      background: #f59e0b;
+      color: white;
+    }
+
+    .btn-danger {
+      background: #dc2626;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .btn:hover {
+      opacity: .9;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      width: 100%;
+      max-width: 500px;
+      border-radius: 15px;
+      padding: 25px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .modal-header h3 {
+      font-size: 20px;
+    }
+
+    .close {
+      border: none;
+      background: none;
+      font-size: 25px;
+      cursor: pointer;
+      color: #6b7280;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .history-item {
+      padding: 12px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .history-item:last-child {
+      border-bottom: none;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      background: #e5e7eb;
+      margin-left: 5px;
+    }
+
+    .badge-success {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .badge-warning {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    footer {
+      text-align: center;
+      color: #6b7280;
+      font-size: 12px;
+      padding: 30px 20px;
+    }
+
+    @media (max-width: 800px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .header-title h1 {
+        font-size: 22px;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .dashboard {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .stat-value {
+        font-size: 22px;
+      }
+
+      .task-actions {
+        flex-direction: column;
+      }
+
+      .task {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-content">
+    <div class="header-title">
+      <span style="font-size:32px;">🍽️</span>
+      <h1>Checklist do Restaurante</h1>
+    </div>
+
+    <p class="header-subtitle">
+      Organização das tarefas por função e período do turno
+    </p>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- DADOS DO FUNCIONÁRIO -->
+  <section class="card">
+
+    <div class="card-title">
+      👤 Dados do funcionário
+    </div>
+
+    <div class="form-grid">
+
+      <div>
+        <label for="nomeFuncionario">Nome do funcionário</label>
+        <input
+          type="text"
+          id="nomeFuncionario"
+          placeholder="Digite o nome"
+        >
+      </div>
+
+      <div>
+        <label for="funcao">Função</label>
+
+        <select id="funcao">
+          <option value="Garçom">🍽️ Garçom</option>
+          <option value="Cozinheiro">👨‍🍳 Cozinheiro</option>
+          <option value="Copeiro/Limpeza">🧹 Copeiro/Limpeza</option>
+          <option value="Caixa">💰 Caixa</option>
+          <option value="Gerente">👔 Gerente</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="turno">Turno</label>
+
+        <select id="turno">
+          <option value="Manhã">☀️ Manhã</option>
+          <option value="Tarde">🌤️ Tarde</option>
+          <option value="Noite">🌙 Noite</option>
+        </select>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- DASHBOARD -->
+  <section class="dashboard">
+
+    <div class="stat">
+      <div class="stat-label">Total de tarefas</div>
+      <div class="stat-value" id="totalTarefas">0</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">Concluídas</div>
+      <div class="stat-value" id="tarefasConcluidas">0</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">Pendentes</div>
+      <div class="stat-value" id="tarefasPendentes">0</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">Progresso</div>
+      <div class="stat-value" id="porcentagem">0%</div>
+
+      <div class="progress-container">
+        <div class="progress-bar" id="barraProgresso"></div>
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- FILTROS -->
+  <section class="card">
+
+    <div class="section-title">
+      <h2>📋 Checklist</h2>
+    </div>
+
+    <div class="filters">
+
+      <button
+        class="filter-btn active"
+        onclick="filtrarPeriodo('Todos', this)"
+      >
+        Todas
+      </button>
+
+      <button
+        class="filter-btn"
+        onclick="filtrarPeriodo('Abertura', this)"
+      >
+        🌅 Abertura
+      </button>
+
+      <button
+        class="filter-btn"
+        onclick="filtrarPeriodo('Turno', this)"
+      >
+        🔄 Durante o turno
+      </button>
+
+      <button
+        class="filter-btn"
+        onclick="filtrarPeriodo('Fechamento', this)"
+      >
+        🌙 Fechamento
+      </button>
+
+      <button
+        class="filter-btn"
+        onclick="filtrarPeriodo('Pendentes', this)"
+      >
+        ⏳ Pendentes
+      </button>
+
+    </div>
+
+    <div id="listaTarefas" class="task-list"></div>
+
+  </section>
+
+
+  <!-- AÇÕES -->
+  <section class="card">
+
+    <div class="card-title">
+      ⚙️ Ações
+    </div>
+
+    <div class="bottom-actions">
+
+      <button
+        class="btn btn-success"
+        onclick="finalizarTurno()"
+      >
+        ✅ Finalizar turno
+      </button>
+
+      <button
+        class="btn btn-primary"
+        onclick="abrirHistorico()"
+      >
+        📊 Ver histórico
+      </button>
+
+      <button
+        class="btn btn-warning"
+        onclick="exportarDados()"
+      >
+        📥 Exportar dados
+      </button>
+
+      <button
+        class="btn btn-danger"
+        onclick="limparChecklist()"
+      >
+        🗑️ Limpar checklist
+      </button>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<footer>
+  Sistema de Checklist do Restaurante
+</footer>
+
+
+<!-- MODAL DE OBSERVAÇÃO -->
+<div id="modalObservacao" class="modal">
+
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h3>📝 Observação da tarefa</h3>
+
+      <button
+        class="close"
+        onclick="fecharModal('modalObservacao')"
+      >
+        ×
+      </button>
+    </div>
+
+    <textarea
+      id="textoObservacao"
+      rows="5"
+      placeholder="Digite uma observação..."
+    ></textarea>
+
+    <div class="modal-actions">
+
+      <button
+        class="btn btn-secondary"
+        onclick="fecharModal('modalObservacao')"
+      >
+        Cancelar
+      </button>
+
+      <button
+        class="btn btn-primary"
+        onclick="salvarObservacao()"
+      >
+        Salvar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- MODAL DE PROBLEMA -->
+<div id="modalProblema" class="modal">
+
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h3>⚠️ Registrar problema</h3>
+
+      <button
+        class="close"
+        onclick="fecharModal('modalProblema')"
+      >
+        ×
+      </button>
+    </div>
+
+    <textarea
+      id="textoProblema"
+      rows="5"
+      placeholder="Descreva o problema encontrado..."
+    ></textarea>
+
+    <div class="modal-actions">
+
+      <button
+        class="btn btn-secondary"
+        onclick="fecharModal('modalProblema')"
+      >
+        Cancelar
+      </button>
+
+      <button
+        class="btn btn-danger"
+        onclick="salvarProblema()"
+      >
+        Registrar problema
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- MODAL HISTÓRICO -->
+<div id="modalHistorico" class="modal">
+
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h3>📊 Histórico de turnos</h3>
+
+      <button
+        class="close"
+        onclick="fecharModal('modalHistorico')"
+      >
+        ×
+      </button>
+    </div>
+
+    <div id="listaHistorico"></div>
+
+    <div class="modal-actions">
+
+      <button
+        class="btn btn-secondary"
+        onclick="fecharModal('modalHistorico')"
+      >
+        Fechar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+  /*
+   * ============================================================
+   * DADOS DAS TAREFAS
+   * ============================================================
+   */
+
+  const tarefas = [
+
+    /* GARÇOM */
+
+    {
+      id: "garcom-01",
+      funcao: "Garçom",
+      periodo: "Abertura",
+      titulo: "Verificar limpeza e organização das mesas"
+    },
+
+    {
+      id: "garcom-02",
+      funcao: "Garçom",
+      periodo: "Abertura",
+      titulo: "Organizar mesas com pratos, talheres e copos"
+    },
+
+    {
+      id: "garcom-03",
+      funcao: "Garçom",
+      periodo: "Abertura",
+      titulo: "Verificar cardápios disponíveis"
+    },
+
+    {
+      id: "garcom-04",
+      funcao: "Garçom",
+      periodo: "Turno",
+      titulo: "Atender clientes e registrar pedidos corretamente"
+    },
+
+    {
+      id: "garcom-05",
+      funcao: "Garçom",
+      periodo: "Turno",
+      titulo: "Conferir pedidos antes de entregar ao cliente"
+    },
+
+    {
+      id: "garcom-06",
+      funcao: "Garçom",
+      periodo: "Turno",
+      titulo: "Manter as mesas limpas durante o atendimento"
+    },
+
+    {
+      id: "garcom-07",
+      funcao: "Garçom",
+      periodo: "Fechamento",
+      titulo: "Recolher materiais e organizar as mesas"
+    },
+
+    {
+      id: "garcom-08",
+      funcao: "Garçom",
+      periodo: "Fechamento",
+      titulo: "Informar ao gerente problemas ocorridos durante o turno"
+    },
+
+
+    /* COZINHEIRO */
+
+    {
+      id: "cozinha-01",
+      funcao: "Cozinheiro",
+      periodo: "Abertura",
+      titulo: "Verificar organização da cozinha"
+    },
+
+    {
+      id: "cozinha-02",
+      funcao: "Cozinheiro",
+      periodo: "Abertura",
+      titulo: "Verificar validade dos alimentos"
+    },
+
+    {
+      id: "cozinha-03",
+      funcao: "Cozinheiro",
+      periodo: "Abertura",
+      titulo: "Verificar estoque dos principais ingredientes"
+    },
+
+    {
+      id: "cozinha-04",
+      funcao: "Cozinheiro",
+      periodo: "Turno",
+      titulo: "Preparar os alimentos conforme os padrões do restaurante"
+    },
+
+    {
+      id: "cozinha-05",
+      funcao: "Cozinheiro",
+      periodo: "Turno",
+      titulo: "Manter bancadas e equipamentos organizados"
+    },
+
+    {
+      id: "cozinha-06",
+      funcao: "Cozinheiro",
+      periodo: "Turno",
+      titulo: "Controlar pedidos enviados para a cozinha"
+    },
+
+    {
+      id: "cozinha-07",
+      funcao: "Cozinheiro",
+      periodo: "Fechamento",
+      titulo: "Armazenar corretamente os alimentos"
+    },
+
+    {
+      id: "cozinha-08",
+      funcao: "Cozinheiro",
+      periodo: "Fechamento",
+      titulo: "Realizar limpeza da cozinha"
+    },
+
+
+    /* COPEIRO / LIMPEZA */
+
+    {
+      id: "copeiro-01",
+      funcao: "Copeiro/Limpeza",
+      periodo: "Abertura",
+      titulo: "Verificar limpeza dos ambientes"
+    },
+
+    {
+      id: "copeiro-02",
+      funcao: "Copeiro/Limpeza",
+      periodo: "Abertura",
+      titulo: "Abastecer materiais de limpeza"
+    },
+
+    {
+      id: "copeiro-03",
+      funcao: "Copeiro/Limpeza",
+      periodo: "Turno",
+      titulo: "Realizar limpeza das áreas utilizadas"
+    },
+
+    {
+      id: "copeiro-04",
+      funcao: "Copeiro/Limpeza",
+      periodo: "Turno",
+      titulo: "Recolher lixo das áreas do restaurante"
+    },
+
+    {
+      id: "copeiro-05",
+      funcao: "Copeiro/Limpeza",
+      periodo: "Turno",
+      titulo: "Manter banheiros limpos e abastecidos"
+    },
+
+    {
+      id: "copeiro-06",
+      funcao: "Copeiro/Limpeza",
+      periodo: "Fechamento",
+      titulo: "Realizar limpeza final das áreas"
+    },
+
+    {
+      id: "copeiro-07",
+      funcao: "Copeiro/Limpeza",
+      periodo: "Fechamento",
+      titulo: "Guardar materiais de limpeza"
+    },
+
+
+    /* CAIXA */
+
+    {
+      id: "caixa-01",
+      funcao: "Caixa",
+      periodo: "Abertura",
+      titulo: "Verificar sistema e equipamento do caixa"
+    },
+
+    {
+      id: "caixa-02",
+      funcao: "Caixa",
+      periodo: "Abertura",
+      titulo: "Conferir fundo de caixa"
+    },
+
+    {
+      id: "caixa-03",
+      funcao: "Caixa",
+      periodo: "Turno",
+      titulo: "Registrar corretamente os pagamentos"
+    },
+
+    {
+      id: "caixa-04",
+      funcao: "Caixa",
+      periodo: "Turno",
+      titulo: "Conferir valores recebidos"
+    },
+
+    {
+      id: "caixa-05",
+      funcao: "Caixa",
+      periodo: "Fechamento",
+      titulo: "Conferir fechamento do caixa"
+    },
+
+    {
+      id: "caixa-06",
+      funcao: "Caixa",
+      periodo: "Fechamento",
+      titulo: "Informar divergências ao gerente"
+    },
+
+
+    /* GERENTE */
+
+    {
+      id: "gerente-01",
+      funcao: "Gerente",
+      periodo: "Abertura",
+      titulo: "Verificar funcionamento geral do restaurante"
+    },
+
+    {
+      id: "gerente-02",
+      funcao: "Gerente",
+      periodo: "Abertura",
+      titulo: "Conferir equipe presente"
+    },
+
+    {
+      id: "gerente-03",
+      funcao: "Gerente",
+      periodo: "Turno",
+      titulo: "Acompanhar atendimento aos clientes"
+    },
+
+    {
+      id: "gerente-04",
+      funcao: "Gerente",
+      periodo: "Turno",
+      titulo: "Acompanhar problemas e ocorrências"
+    },
+
+    {
+      id: "gerente-05",
+      funcao: "Gerente",
+      periodo: "Fechamento",
+      titulo: "Conferir fechamento das áreas"
+    },
+
+    {
+      id: "gerente-06",
+      funcao: "Gerente",
+      periodo: "Fechamento",
+      titulo: "Registrar informações importantes do turno"
+    }
+
+  ];
+
+
+  /*
+   * ============================================================
+   * VARIÁVEIS
+   * ============================================================
+   */
+
+  let periodoAtual = "Todos";
+
+  let tarefaSelecionada = null;
+
+  const STORAGE_TAREFAS = "checklist_restaurante_tarefas_v1";
+  const STORAGE_HISTORICO = "checklist_restaurante_historico_v1";
+  const STORAGE_NOME = "checklist_restaurante_nome_v1";
+
+
+  /*
+   * ============================================================
+   * ESTADO DAS TAREFAS
+   * ============================================================
+   */
+
+  function carregarEstado() {
+
+    try {
+
+      const dados =
+        localStorage.getItem(STORAGE_TAREFAS);
+
+      if (!dados) {
+        return {};
+      }
+
+      return JSON.parse(dados);
+
+    } catch (erro) {
+
+      console.error("Erro ao carregar tarefas:", erro);
+
+      return {};
+
+    }
+
+  }
+
+
+  function salvarEstado(estado) {
+
+    localStorage.setItem(
+      STORAGE_TAREFAS,
+      JSON.stringify(estado)
+    );
+
+  }
+
+
+  /*
+   * ============================================================
+   * RENDERIZAR TAREFAS
+   * ============================================================
+   */
+
+  function mostrarTarefas() {
+
+    const lista =
+      document.getElementById("listaTarefas");
+
+    const funcao =
+      document.getElementById("funcao").value;
+
+    const estado =
+      carregarEstado();
+
+    let tarefasFiltradas =
+      tarefas.filter(
+        tarefa => tarefa.funcao === funcao
+      );
+
+
+    if (periodoAtual !== "Todos") {
+
+      if (periodoAtual === "Pendentes") {
+
+        tarefasFiltradas =
+          tarefasFiltradas.filter(
+            tarefa => !estado[tarefa.id]?.concluida
+          );
+
+      } else {
+
+        tarefasFiltradas =
+          tarefasFiltradas.filter(
+            tarefa => tarefa.periodo === periodoAtual
+          );
+
+      }
+
+    }
+
+
+    if (tarefasFiltradas.length === 0) {
+
+      lista.innerHTML = `
+        <div class="empty">
+          🎉 Nenhuma tarefa pendente neste filtro.
+        </div>
+      `;
+
+      atualizarDashboard();
+
+      return;
+
+    }
+
+
+    lista.innerHTML = "";
+
+
+    tarefasFiltradas.forEach(tarefa => {
+
+      const dados =
+        estado[tarefa.id] || {};
+
+      const concluida =
+        dados.concluida === true;
+
+      const div =
+        document.createElement("div");
+
+      div.className =
+        "task" + (concluida ? " completed" : "");
+
+
+      div.innerHTML = `
+
+        <input
+          type="checkbox"
+          ${concluida ? "checked" : ""}
+          onchange="marcarTarefa('${tarefa.id}', this.checked)"
+        >
+
+        <div class="task-content">
+
+          <div class="task-title">
+            ${tarefa.titulo}
+          </div>
+
+          <div class="task-info">
+            ${iconePeriodo(tarefa.periodo)}
+            ${tarefa.periodo}
+
+            ${
+              dados.horario
+              ? " • Concluída às " + dados.horario
+              : ""
+            }
+
+            ${
+              dados.problema
+              ? '<br>⚠️ Problema registrado'
+              : ""
+            }
+
+            ${
+              dados.observacao
+              ? '<br>📝 ' + escaparHTML(dados.observacao)
+              : ""
+            }
+
+          </div>
+
+        </div>
+
+        <div class="task-actions">
+
+          <button
+            class="small-btn note-btn"
+            onclick="abrirObservacao('${tarefa.id}')"
+          >
+            📝
+          </button>
+
+          <button
+            class="small-btn problem-btn"
+            onclick="abrirProblema('${tarefa.id}')"
+          >
+            ⚠️
+          </button>
+
+        </div>
+
+      `;
+
+      lista.appendChild(div);
+
+    });
+
+
+    atualizarDashboard();
+
+  }
+
+
+  function iconePeriodo(periodo) {
+
+    if (periodo === "Abertura") {
+      return "🌅";
+    }
+
+    if (periodo === "Turno") {
+      return "🔄";
+    }
+
+    return "🌙";
+
+  }
+
+
+  /*
+   * ============================================================
+   * MARCAR TAREFA
+   * ============================================================
+   */
+
+  function marcarTarefa(id, marcada) {
+
+    const nome =
+      document.getElementById("nomeFuncionario").value.trim();
+
+
+    if (!nome) {
+
+      alert(
+        "Digite o nome do funcionário antes de marcar uma tarefa."
+      );
+
+      mostrarTarefas();
+
+      document
+        .getElementById("nomeFuncionario")
+        .focus();
+
+      return;
+
+    }
+
+
+    const estado =
+      carregarEstado();
+
+
+    if (!estado[id]) {
+      estado[id] = {};
+    }
+
+
+    estado[id].concluida =
+      marcada;
+
+
+    if (marcada) {
+
+      const agora =
+        new Date();
+
+      estado[id].horario =
+        agora.toLocaleTimeString(
+          "pt-BR",
+          {
+            hour: "2-digit",
+            minute: "2-digit"
+          }
+        );
+
+    } else {
+
+      delete estado[id].horario;
+
+    }
+
+
+    estado[id].funcionario =
+      nome;
+
+
+    estado[id].data =
+      new Date().toLocaleDateString("pt-BR");
+
+
+    salvarEstado(estado);
+
+    mostrarTarefas();
+
+  }
+
+
+  /*
+   * ============================================================
+   * DASHBOARD
+   * ============================================================
+   */
+
+  function atualizarDashboard() {
+
+    const funcao =
+      document.getElementById("funcao").value;
+
+    const estado =
+      carregarEstado();
+
+
+    const tarefasDaFuncao =
+      tarefas.filter(
+        tarefa => tarefa.funcao === funcao
+      );
+
+
+    const total =
+      tarefasDaFuncao.length;
+
+
+    const concluidas =
+      tarefasDaFuncao.filter(
+        tarefa =>
+          estado[tarefa.id]?.concluida === true
+      ).length;
+
+
+    const pendentes =
+      total - concluidas;
+
+
+    const percentual =
+      total === 0
+      ? 0
+      : Math.round((concluidas / total) * 100);
+
+
+    document.getElementById("totalTarefas")
+      .textContent = total;
+
+    document.getElementById("tarefasConcluidas")
+      .textContent = concluidas;
+
+    document.getElementById("tarefasPendentes")
+      .textContent = pendentes;
+
+    document.getElementById("porcentagem")
+      .textContent = percentual + "%";
+
+    document.getElementById("barraProgresso")
+      .style.width = percentual + "%";
+
+  }
+
+
+  /*
+   * ============================================================
+   * FILTROS
+   * ============================================================
+   */
+
+  function filtrarPeriodo(periodo, botao) {
+
+    periodoAtual =
+      periodo;
+
+
+    document
+      .querySelectorAll(".filter-btn")
+      .forEach(
+        btn => btn.classList.remove("active")
+      );
+
+
+    botao.classList.add("active");
+
+
+    mostrarTarefas();
+
+  }
+
+
+  /*
+   * ============================================================
+   * OBSERVAÇÃO
+   * ============================================================
+   */
+
+  function abrirObservacao(id) {
+
+    tarefaSelecionada =
+      id;
+
+
+    const estado =
+      carregarEstado();
+
+
+    document.getElementById("textoObservacao")
+      .value =
+      estado[id]?.observacao || "";
+
+
+    abrirModal("modalObservacao");
+
+  }
+
+
+  function salvarObservacao() {
+
+    if (!tarefaSelecionada) {
+      return;
+    }
+
+
+    const estado =
+      carregarEstado();
+
+
+    if (!estado[tarefaSelecionada]) {
+      estado[tarefaSelecionada] = {};
+    }
+
+
+    estado[tarefaSelecionada].observacao =
+      document
+        .getElementById("textoObservacao")
+        .value.trim();
+
+
+    salvarEstado(estado);
+
+    fecharModal("modalObservacao");
+
+    mostrarTarefas();
+
+  }
+
+
+  /*
+   * ============================================================
+   * PROBLEMA
+   * ============================================================
+   */
+
+  function abrirProblema(id) {
+
+    tarefaSelecionada =
+      id;
+
+
+    const estado =
+      carregarEstado();
+
+
+    document.getElementById("textoProblema")
+      .value =
+      estado[id]?.problema || "";
+
+
+    abrirModal("modalProblema");
+
+  }
+
+
+  function salvarProblema() {
+
+    if (!tarefaSelecionada) {
+      return;
+    }
+
+
+    const texto =
+      document
+        .getElementById("textoProblema")
+        .value.trim();
+
+
+    if (!texto) {
+
+      alert(
+        "Digite uma descrição para o problema."
+      );
+
+      return;
+
+    }
+
+
+    const estado =
+      carregarEstado();
+
+
+    if (!estado[tarefaSelecionada]) {
+      estado[tarefaSelecionada] = {};
+    }
+
+
+    estado[tarefaSelecionada].problema =
+      texto;
+
+
+    salvarEstado(estado);
+
+    fecharModal("modalProblema");
+
+    mostrarTarefas();
+
+  }
+
+
+  /*
+   * ============================================================
+   * MODAIS
+   * ============================================================
+   */
+
+  function abrirModal(id) {
+
+    document
+      .getElementById(id)
+      .classList.add("show");
+
+  }
+
+
+  function fecharModal(id) {
+
+    document
+      .getElementById(id)
+      .classList.remove("show");
+
+  }
+
+
+  /*
+   * ============================================================
+   * FINALIZAR TURNO
+   * ============================================================
+   */
+
+  function finalizarTurno() {
+
+    const nome =
+      document
+        .getElementById("nomeFuncionario")
+        .value.trim();
+
+
+    if (!nome) {
+
+      alert(
+        "Digite o nome do funcionário antes de finalizar o turno."
+      );
+
+      return;
+
+    }
+
+
+    const funcao =
+      document.getElementById("funcao").value;
+
+
+    const turno =
+      document.getElementById("turno").value;
+
+
+    const estado =
+      carregarEstado();
+
+
+    const tarefasDaFuncao =
+      tarefas.filter(
+        tarefa => tarefa.funcao === funcao
+      );
+
+
+    const concluidas =
+      tarefasDaFuncao.filter(
+        tarefa =>
+          estado[tarefa.id]?.concluida
+      ).length;
+
+
+    const problemas =
+      tarefasDaFuncao.filter(
+        tarefa =>
+          estado[tarefa.id]?.problema
+      ).length;
+
+
+    const registro = {
+
+      id: Date.now(),
+
+      data:
+        new Date().toLocaleDateString("pt-BR"),
+
+      horario:
+        new Date().toLocaleTimeString(
+          "pt-BR",
+          {
+            hour: "2-digit",
+            minute: "2-digit"
+          }
+        ),
+
+      funcionario:
+        nome,
+
+      funcao:
+        funcao,
+
+      turno:
+        turno,
+
+      total:
+        tarefasDaFuncao.length,
+
+      concluidas:
+        concluidas,
+
+      problemas:
+        problemas
+
+    };
+
+
+    const historico =
+      carregarHistorico();
+
+
+    historico.unshift(registro);
+
+
+    localStorage.setItem(
+      STORAGE_HISTORICO,
+      JSON.stringify(historico)
+    );
+
+
+    alert(
+      "Turno finalizado e salvo no histórico!"
+    );
+
+  }
+
+
+  /*
+   * ============================================================
+   * HISTÓRICO
+   * ============================================================
+   */
+
+  function carregarHistorico() {
+
+    try {
+
+      const dados =
+        localStorage.getItem(
+          STORAGE_HISTORICO
+        );
+
+
+      if (!dados) {
+        return [];
+      }
+
+
+      return JSON.parse(dados);
+
+    } catch (erro) {
+
+      return [];
+
+    }
+
+  }
+
+
+  function abrirHistorico() {
+
+    const historico =
+      carregarHistorico();
+
+
+    const lista =
+      document.getElementById(
+        "listaHistorico"
+      );
+
+
+    if (historico.length === 0) {
+
+      lista.innerHTML = `
+        <div class="empty">
+          Nenhum turno finalizado ainda.
+        </div>
+      `;
+
+    } else {
+
+      lista.innerHTML =
+        historico.map(item => `
+
+          <div class="history-item">
+
+            <strong>
+              ${escaparHTML(item.funcionario)}
+            </strong>
+
+            <span class="badge">
+              ${escaparHTML(item.funcao)}
+            </span>
+
+            <span class="badge">
+              ${escaparHTML(item.turno)}
+            </span>
+
+            <br>
+
+            <small>
+              ${item.data} às ${item.horario}
+            </small>
+
+            <br>
+
+            <small>
+              ✅ ${item.concluidas}/${item.total} tarefas concluídas
+              ${
+                item.problemas > 0
+                ? " • ⚠️ " + item.problemas + " problema(s)"
+                : ""
+              }
+            </small>
+
+          </div>
+
+        `).join("");
+
+    }
+
+
+    abrirModal("modalHistorico");
+
+  }
+
+
+  /*
+   * ============================================================
+   * LIMPAR CHECKLIST
+   * ============================================================
+   */
+
+  function limparChecklist() {
+
+    const confirmar =
+      confirm(
+        "Tem certeza que deseja limpar o checklist atual?"
+      );
+
+
+    if (!confirmar) {
+      return;
+    }
+
+
+    localStorage.removeItem(
+      STORAGE_TAREFAS
+    );
+
+
+    mostrarTarefas();
+
+
+    alert(
+      "Checklist limpo com sucesso!"
+    );
+
+  }
+
+
+  /*
+   * ============================================================
+   * EXPORTAR DADOS
+   * ============================================================
+   */
+
+  function exportarDados() {
+
+    const estado =
+      carregarEstado();
+
+
+    const historico =
+      carregarHistorico();
+
+
+    const dados = {
+
+      dataExportacao:
+        new Date().toISOString(),
+
+      tarefas:
+        estado,
+
+      historico:
+        historico
+
+    };
+
+
+    const arquivo =
+      new Blob(
+        [
+          JSON.stringify(
+            dados,
+            null,
+            2
+          )
+        ],
+        {
+          type: "application/json"
+        }
+      );
+
+
+    const url =
+      URL.createObjectURL(
+        arquivo
+      );
+
+
+    const link =
+      document.createElement("a");
+
+
+    link.href =
+      url;
+
+
+    link.download =
+      "checklist-restaurante.json";
+
+
+    link.click();
+
+
+    URL.revokeObjectURL(url);
+
+  }
+
+
+  /*
+   * ============================================================
+   * SEGURANÇA BÁSICA DE TEXTO
+   * ============================================================
+   */
+
+  function escaparHTML(texto) {
+
+    return String(texto)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  /*
+   * ============================================================
+   * SALVAR NOME
+   * ============================================================
+   */
+
+  const campoNome =
+    document.getElementById(
+      "nomeFuncionario"
+    );
+
+
+  campoNome.value =
+    localStorage.getItem(
+      STORAGE_NOME
+    ) || "";
+
+
+  campoNome.addEventListener(
+    "input",
+    function() {
+
+      localStorage.setItem(
+        STORAGE_NOME,
+        this.value
+      );
+
+    }
+  );
+
+
+  /*
+   * ============================================================
+   * TROCA DE FUNÇÃO
+   * ============================================================
+   */
+
+  document
+    .getElementById("funcao")
+    .addEventListener(
+      "change",
+      function() {
+
+        periodoAtual =
+          "Todos";
+
+
+        document
+          .querySelectorAll(".filter-btn")
+          .forEach(
+            btn =>
+              btn.classList.remove("active")
+          );
+
+
+        document
+          .querySelector(".filter-btn")
+          .classList.add("active");
+
+
+        mostrarTarefas();
+
+      }
+    );
+
+
+  /*
+   * ============================================================
+   * FECHAR MODAL CLICANDO FORA
+   * ============================================================
+   */
+
+  document
+    .querySelectorAll(".modal")
+    .forEach(
+      modal => {
+
+        modal.addEventListener(
+          "click",
+          function(event) {
+
+            if (
+              event.target === modal
+            ) {
+
+              modal.classList.remove(
+                "show"
+              );
+
+            }
+
+          }
+        );
+
+      }
+    );
+
+
+  /*
+   * ============================================================
+   * INICIALIZAÇÃO
+   * ============================================================
+   */
+
+  mostrarTarefas();
+
+</script>
+
+</body>
+</html>
