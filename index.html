@@ -421,6 +421,8 @@
       }
     }
   </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 </head>
 
 <body>
@@ -740,6 +742,58 @@
 
 
 <script>
+
+    // ============================================================
+  // CONEXÃO COM SUPABASE
+  // ============================================================
+
+  const SUPABASE_URL =
+    "https://dwhpsstywfqjqqxxdsi.supabase.co";
+
+  const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_jjI4qzWYhGBvHSovr4pnDQ_QbKaYhLG";
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
+    // ============================================================
+  // TESTE DE CONEXÃO COM SUPABASE
+  // ============================================================
+
+  async function testarSupabase() {
+
+    console.log("🔄 Testando conexão com Supabase...");
+
+    const { data, error } =
+      await supabaseClient
+        .from("tarefas")
+        .select("*")
+        .order("id");
+
+    if (error) {
+
+      console.error(
+        "❌ Erro ao conectar ao Supabase:",
+        error
+      );
+
+      return;
+    }
+
+    console.log(
+      "✅ Supabase conectado com sucesso!"
+    );
+
+    console.log(
+      "📋 Tarefas encontradas no banco:",
+      data.length
+    );
+
+    console.table(data);
+  }
 
   /*
    * ============================================================
@@ -1986,8 +2040,9 @@
    * INICIALIZAÇÃO
    * ============================================================
    */
+mostrarTarefas();
 
-  mostrarTarefas();
+testarSupabase();
 
 </script>
 
