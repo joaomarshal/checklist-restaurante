@@ -1340,77 +1340,113 @@ async function carregarTarefasDoSupabase() {
    * ============================================================
    */
 
-  function marcarTarefa(id, marcada) {
+ async function marcarTarefa(id, marcada) {
 
-    const nome =
-      document.getElementById("nomeFuncionario").value.trim();
+  const nome =
+    document.getElementById("nomeFuncionario").value.trim();
 
+  if (!nome) {
 
-    if (!nome) {
+    alert(
+      "Digite o nome do funcionário antes de marcar uma tarefa."
+    );
 
-      alert(
-        "Digite o nome do funcionário antes de marcar uma tarefa."
+    mostrarTarefas();
+
+    document
+      .getElementById("nomeFuncionario")
+      .focus();
+
+    return;
+
+  }
+
+  const estado =
+    carregarEstado();
+
+  if (!estado[id]) {
+    estado[id] = {};
+  }
+
+  estado[id].concluida =
+    marcada;
+
+  if (marcada) {
+
+    const agora =
+      new Date();
+
+    estado[id].horario =
+      agora.toLocaleTimeString(
+        "pt-BR",
+        {
+          hour: "2-digit",
+          minute: "2-digit"
+        }
       );
 
-      mostrarTarefas();
+  } else {
 
-      document
-        .getElementById("nomeFuncionario")
-        .focus();
+    delete estado[id].horario;
+
+  }
+
+  estado[id].funcionario =
+    nome;
+
+  estado[id].data =
+    new Date().toLocaleDateString("pt-BR");
+
+  salvarEstado(estado);
+
+  /*
+   * ============================================================
+   * SALVAR EXECUÇÃO NO SUPABASE
+   * ============================================================
+   */
+
+  if (marcada) {
+
+    const { error } =
+      await supabaseClient
+        .from("execucoes")
+        .insert({
+
+          tarefa_id: Number(id),
+
+          funcionario_id: null,
+
+          status: "concluida",
+
+          observacao: null
+
+        });
+
+    if (error) {
+
+      console.error(
+        "❌ Erro ao salvar execução no Supabase:",
+        error
+      );
+
+      alert(
+        "A tarefa foi marcada no sistema, mas não foi possível salvar no Supabase."
+      );
 
       return;
 
     }
 
-
-    const estado =
-      carregarEstado();
-
-
-    if (!estado[id]) {
-      estado[id] = {};
-    }
-
-
-    estado[id].concluida =
-      marcada;
-
-
-    if (marcada) {
-
-      const agora =
-        new Date();
-
-      estado[id].horario =
-        agora.toLocaleTimeString(
-          "pt-BR",
-          {
-            hour: "2-digit",
-            minute: "2-digit"
-          }
-        );
-
-    } else {
-
-      delete estado[id].horario;
-
-    }
-
-
-    estado[id].funcionario =
-      nome;
-
-
-    estado[id].data =
-      new Date().toLocaleDateString("pt-BR");
-
-
-    salvarEstado(estado);
-
-    mostrarTarefas();
+    console.log(
+      "✅ Tarefa salva no Supabase:",
+      id
+    );
 
   }
 
+  mostrarTarefas();
+
+}
 
   /*
    * ============================================================
