@@ -801,7 +801,7 @@ const SUPABASE_URL =
    * ============================================================
    */
 
-  const tarefas = [
+  let tarefas = [ = [
 
     /* GARÇOM */
 
@@ -1063,7 +1063,59 @@ const SUPABASE_URL =
     }
 
   ];
+async function carregarTarefasDoSupabase() {
 
+  console.log("🔄 Carregando tarefas do Supabase...");
+
+  const { data, error } =
+    await supabaseClient
+      .from("tarefas")
+      .select("id, titulo, periodo, ativa, funcao_id")
+      .eq("ativa", true)
+      .order("id");
+
+  if (error) {
+
+    console.error(
+      "❌ Erro ao carregar tarefas do Supabase:",
+      error
+    );
+
+    return;
+
+  }
+
+  const nomesFuncoes = {
+    1: "Garçom",
+    2: "Cozinheiro",
+    3: "Copeiro/Limpeza",
+    4: "Caixa",
+    5: "Gerente"
+  };
+
+  tarefas = data.map(tarefa => ({
+
+    id: String(tarefa.id),
+
+    funcao:
+      nomesFuncoes[tarefa.funcao_id],
+
+    periodo:
+      tarefa.periodo,
+
+    titulo:
+      tarefa.titulo
+
+  }));
+
+  console.log(
+    "✅ Tarefas carregadas do Supabase:",
+    tarefas.length
+  );
+
+  mostrarTarefas();
+
+}
 
   /*
    * ============================================================
@@ -2040,7 +2092,7 @@ const SUPABASE_URL =
    * INICIALIZAÇÃO
    * ============================================================
    */
-mostrarTarefas();
+carregarTarefasDoSupabase();
 
 testarSupabase();
 
